@@ -1,0 +1,130 @@
+version: "3.6"
+
+services:
+
+#Sensoren
+    sensor_helligkeit:
+        container_name: "sensor_helligkeit"
+        build:
+            context: ./sensor
+            dockerfile: dockerfile
+        image: verteilte_systeme/sensor
+
+        environment:
+            SENSOR_NAME: "Dachterrasse"
+            SENSOR_TYPE: "Helligkeit"
+            ZENTRALE_IP: "172.20.0.2"
+            ZENTRALE_PORT: "50000"
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.11"
+
+    sensor_temperatur:
+        container_name: "sensor_temperatur"
+        build:
+            context: ./sensor
+            dockerfile: dockerfile
+        image: verteilte_systeme/sensor
+
+        environment:
+            SENSOR_NAME: "Heizung Wohnzimmer"
+            SENSOR_TYPE: "Temperatur"
+            ZENTRALE_IP: "172.20.0.2"
+            ZENTRALE_PORT: "50000"
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.12"
+    
+    sensor_niederschlag:
+        container_name: "sensor_niederschlag"
+        build:
+            context: ./sensor
+            dockerfile: dockerfile
+        image: verteilte_systeme/sensor
+
+        environment:
+            SENSOR_NAME: "Dachterrasse"
+            SENSOR_TYPE: "Niederschlag"
+            ZENTRALE_IP: "172.20.0.2"
+            ZENTRALE_PORT: "50000"
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.13"
+
+    sensor_wind:
+        container_name: "sensor_wind"
+        build:
+            context: ./sensor
+            dockerfile: dockerfile
+        image: verteilte_systeme/sensor
+
+        environment:
+            SENSOR_NAME: "Dach"
+            SENSOR_TYPE: "Wind"
+            ZENTRALE_IP: "172.20.0.2"
+            ZENTRALE_PORT: "50000"
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.14"
+
+# Zentrale
+    zentrale:
+        container_name: "zentrale"
+        build:
+            context: ./zentrale
+            dockerfile: dockerfile
+        image: verteilte_systeme/zentrale:latest
+
+        ports:
+            - "50000:50000"
+        
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.2"
+
+
+# Anbieter
+    anbieter:
+        container_name: "anbieter"
+        build:
+            context: ./anbieter
+            dockerfile: dockerfile
+        image: verteilte_systeme/anbieter:latest
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.3"
+
+
+# Management Tool
+    portainer:
+        container_name: "portainer"
+        image: portainer/portainer
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - portainer_data:/data
+
+        ports:
+            - "81:9000"
+        
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.10"
+        
+        
+
+#Volumes
+volumes:
+    portainer_data:
+
+#Netzwerk
+networks:
+    verteilte_systeme:
+        ipam:
+            driver: default
+            config:
+                - subnet: "172.20.0.0/16"
