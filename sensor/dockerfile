@@ -10,7 +10,8 @@ RUN mvn package
 #Finaler Container
 FROM openjdk:8
 
-COPY --from=BUILD /tmp/target/sensor-* /app/sensor.jar
+
+COPY --from=BUILD /tmp/target/sensor-*-with-dependencies.jar /app/sensor.jar
 WORKDIR /app
 
 CMD ["java", "-jar", "/app/sensor.jar"]
