@@ -10,7 +10,7 @@ RUN mvn package
 #Finaler Container
 FROM openjdk:8
 
-COPY --from=BUILD /tmp/target/zentrale-* /app/zentrale.jar
+COPY --from=BUILD /tmp/target/zentrale-*-with-dependencies.jar /app/zentrale.jar
 WORKDIR /app
 
 CMD ["java", "-jar", "/app/zentrale.jar"]
