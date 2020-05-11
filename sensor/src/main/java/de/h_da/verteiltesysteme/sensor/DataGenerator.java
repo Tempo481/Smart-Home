@@ -28,7 +28,7 @@ public class DataGenerator {
         float value;
 
         switch (sensorTyp){
-            case TEMPERATUR:{
+            case Temperatur:{
                 value = getFakeValue(0, 30);
                 break;
             }case Niederschlag:{
