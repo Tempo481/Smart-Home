@@ -1,15 +1,14 @@
 package de.h_da.verteiltesysteme.zentrale;
 
-import java.time.Instant;
-import java.util.TimeZone;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
+import org.json.JSONObject;
 
 public class UDPServer extends Thread implements SensorData {
 
@@ -63,7 +62,7 @@ public class UDPServer extends Thread implements SensorData {
         String name = obj.getString("name");
         String sensor_type = obj.getString("sensor_type");
         float value = obj.getInt("value");
-        System.out.println(timestampLong + " " + name + " " + sensor_type + " " + value);
+        System.out.println(timestampLong + " " + name + " " + sensor_type + " " + value + " Latenz: " + Long.toString(System.currentTimeMillis() - timestampLong));
 
         LocalDateTime localDateTime = LocalDateTime.ofInstant(
             Instant.ofEpochMilli(timestampLong),
