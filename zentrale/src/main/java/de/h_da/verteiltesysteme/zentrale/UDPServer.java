@@ -37,7 +37,13 @@ public class UDPServer extends Thread implements SensorData {
             serverSocket.receive(receivePacket);
             String message = new String(receivePacket.getData());
             message = message.substring(0, message.indexOf('\u0000'));
-            parseJSON(message);
+            try {
+                parseJSON(message);
+            }catch (Exception e){
+                System.out.println("There was an error while parsing SensorData:");
+                e.printStackTrace();
+            }
+
             InetAddress inetAddress = receivePacket.getAddress();
             int port = receivePacket.getPort();
 

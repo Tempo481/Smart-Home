@@ -1,7 +1,7 @@
 package de.h_da.verteiltesysteme.sensor;
 
 public enum SensorTyp {
-    TEMPERATUR("Temperatur"),
+    Temperatur("Temperatur"),
     Helligkeit("Helligkeit"),
     Niederschlag("Niederschlag"),
     Wind("Wind");
