@@ -4,7 +4,7 @@ Bearbeiter:
 - Matthias Adrian  (Mtrk. 752237)
 - Jan Zipprich     (Mtrk. 757956)
 
-Version: 1 ([Milestone A](https://code.fbi.h-da.de/istjazipp/verteilte_systeme_mo5y-3/-/milestones/1) | Abgabe 11.05.20)
+Version: 2 ([Milestone B](https://code.fbi.h-da.de/istjazipp/verteilte_systeme_mo5y-3/-/milestones/2) | Abgabe 11.05.20)
 
 ### Systemanforderung:
 
@@ -34,3 +34,5 @@ Version: 1 ([Milestone A](https://code.fbi.h-da.de/istjazipp/verteilte_systeme_m
 - [portainer](https://www.portainer.io/): Weboberfläche um ua die Logs und Status 
 der Container zu sehen
   - IP-Addr.: 172.20.0.10
+- mongodb: Datenbank
+  - IP-Addr.: 172.20.0.20
