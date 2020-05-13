@@ -28,11 +28,22 @@ Version: 2 ([Milestone B](https://code.fbi.h-da.de/istjazipp/verteilte_systeme_m
     - ZENTRALE_PORT: PORT der Zentrale
   - IP-Addr.: 172.20.0.11-14
 - zentrale: Zentrale
+  - Environment:
+    - DB_USERNAME: Username für die MongoDB
+	- DB_PASSWORD: Password für die MongoDB
+	- DB_HOST: IP für die MongoDB
+	- DB_PORT: Port für die MongoDB
   - IP-Addr.: 172.20.0.2
+  - Ports: 50000 für UDP (SensorDaten) & 80 für TCP (Weboberfläche)
+  - Webschnittstelle: http://127.0.0.1:80
 - anbieter: Anbieter
   - IP-Addr.: 172.20.0.3
 - [portainer](https://www.portainer.io/): Weboberfläche um ua die Logs und Status 
 der Container zu sehen
   - IP-Addr.: 172.20.0.10
+  - Webschnittstelle: http://127.0.0.1:81
 - mongodb: Datenbank
   - IP-Addr.: 172.20.0.20
+- [mongoku](https://github.com/huggingface/Mongoku): Simples Datenbank Visualisierungstool
+  - IP-Addr.: 172.20.0.9
+  - Webschnittstelle: http://127.0.0.1:82
