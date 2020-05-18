@@ -47,7 +47,6 @@ public class UDPServer extends Thread implements SensorData {
             int port = receivePacket.getPort();
 
             System.out.println("[" + inetAddress + "][" + port + "] " + message);
-//            System.out.println("RECEIVED from " + inetAddress + " Port: " + port + ": " + message);
         }
     }
 
@@ -76,14 +75,19 @@ public class UDPServer extends Thread implements SensorData {
                 TEMPERATURE_SENSOR_DATA.add(temperature);
                 break;
             }
-            case "Brightness": {
-                Brightness brightness = new Brightness(timestamp, value, sensor_type, name);
+            case "Helligkeit": {
+                Brightness brightness = new Brightness(value, timestamp, sensor_type, name);
                 BRIGHTNESS_SENSOR_DATA.add(brightness);
                 break;
             }
-            case "WindSpeed": {
-                WindSpeed windSpeed = new WindSpeed(value, timestamp, sensor_type, name);
-                WINDSPEED_SENSOR_DATA.add(windSpeed);
+            case "Wind": {
+                Wind wind = new Wind(value, timestamp, sensor_type, name);
+                WINDSPEED_SENSOR_DATA.add(wind);
+                break;
+            }
+            case "Niederschlag": {
+                Rainfall rainfall = new Rainfall(value, timestamp, sensor_type, name);
+                RAINFALL_SENSOR_DATA.add(rainfall);
                 break;
             }
         }

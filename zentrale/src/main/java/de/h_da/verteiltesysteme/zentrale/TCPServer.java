@@ -31,8 +31,8 @@ public class TCPServer extends Thread {
             new TCPServerThread(socket).start();
         }
     }
-    private static final int port = 6868;
+    private static final int port = 80;
 }
 
-//http://localhost:6868/
+//http://localhost/index/
 
