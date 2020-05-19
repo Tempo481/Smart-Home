@@ -142,35 +142,51 @@ public class TCPServerThread extends Thread implements SensorData {
         switch (typeofSensor) {
             case "Temperatur":
                 outToClient.writeBytes(HTML_START);
-                for(Temperature t : TEMPERATURE_SENSOR_DATA) {
-                    outToClient.writeBytes(t.toString());
-                    outToClient.writeBytes("<br>");
+                if (TEMPERATURE_SENSOR_DATA.isEmpty()){
+                    outToClient.writeBytes("TEMPERATURE_SENSOR_DATA is empty<br>");
+                } else {
+                    for(Temperature t : TEMPERATURE_SENSOR_DATA) {
+                        outToClient.writeBytes(t.toString());
+                        outToClient.writeBytes("<br>");
+                    }
                 }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
                 break;
             case "Niederschlag":
                 outToClient.writeBytes(HTML_START);
-                for(Rainfall r : RAINFALL_SENSOR_DATA) {
-                    outToClient.writeBytes(r.toString());
-                    outToClient.writeBytes("<br>");
+                if (RAINFALL_SENSOR_DATA.isEmpty()){
+                    outToClient.writeBytes("RAINFALL_SENSOR_DATA is empty<br>");
+                } else {
+                    for(Rainfall r : RAINFALL_SENSOR_DATA) {
+                        outToClient.writeBytes(r.toString());
+                        outToClient.writeBytes("<br>");
+                    }
                 }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
                 break;
             case "Helligkeit":
                 outToClient.writeBytes(HTML_START);
-                for(Brightness b : BRIGHTNESS_SENSOR_DATA) {
-                    outToClient.writeBytes(b.toString());
-                    outToClient.writeBytes("<br>");
+                if (BRIGHTNESS_SENSOR_DATA.isEmpty()){
+                    outToClient.writeBytes("BRIGHTNESS_SENSOR_DATA is empty<br>");
+                } else {
+                    for(Brightness b : BRIGHTNESS_SENSOR_DATA) {
+                        outToClient.writeBytes(b.toString());
+                        outToClient.writeBytes("<br>");
+                    }
                 }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
             case "Wind":
                 outToClient.writeBytes(HTML_START);
-                for(Wind w : WINDSPEED_SENSOR_DATA) {
-                    outToClient.writeBytes(w.toString());
-                    outToClient.writeBytes("<br>");
+                if (WINDSPEED_SENSOR_DATA.isEmpty()){
+                    outToClient.writeBytes("WINDSPEED_SENSOR_DATA is empty<br>");
+                } else {
+                    for(Wind w : WINDSPEED_SENSOR_DATA) {
+                        outToClient.writeBytes(w.toString());
+                        outToClient.writeBytes("<br>");
+                    }
                 }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
@@ -187,22 +203,38 @@ public class TCPServerThread extends Thread implements SensorData {
         outToClient.writeBytes(HTML_START);
         switch (typeofSensor) {
             case "Temperatur":
-                outToClient.writeBytes(TEMPERATURE_SENSOR_DATA.get(TEMPERATURE_SENSOR_DATA.size()).toString());
+                if (TEMPERATURE_SENSOR_DATA.isEmpty()) {
+                    outToClient.writeBytes("TEMPERATURE_SENSOR_DATA is empty<br>");
+                } else {
+                    outToClient.writeBytes(TEMPERATURE_SENSOR_DATA.get(TEMPERATURE_SENSOR_DATA.size() - 1).toString());
+                }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
                 break;
             case "Niederschlag":
-                outToClient.writeBytes(RAINFALL_SENSOR_DATA.get(RAINFALL_SENSOR_DATA.size()).toString());
+                if (RAINFALL_SENSOR_DATA.isEmpty()) {
+                    outToClient.writeBytes("RAINFALL_SENSOR_DATA is empty<br>");
+                } else {
+                    outToClient.writeBytes(RAINFALL_SENSOR_DATA.get(RAINFALL_SENSOR_DATA.size() - 1).toString());
+                }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
                 break;
             case "Helligkeit":
-                outToClient.writeBytes(BRIGHTNESS_SENSOR_DATA.get(BRIGHTNESS_SENSOR_DATA.size()).toString());
+                if (BRIGHTNESS_SENSOR_DATA.isEmpty()) {
+                    outToClient.writeBytes("BRIGHTNESS_SENSOR_DATA is empty<br>");
+                } else {
+                    outToClient.writeBytes(BRIGHTNESS_SENSOR_DATA.get(BRIGHTNESS_SENSOR_DATA.size() - 1).toString());
+                }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
                 break;
             case "Wind":
-                outToClient.writeBytes(WINDSPEED_SENSOR_DATA.get(WINDSPEED_SENSOR_DATA.size()).toString());
+                if (WINDSPEED_SENSOR_DATA.isEmpty()) {
+                    outToClient.writeBytes("WINDSPEED_SENSOR_DATA is empty<br>");
+                } else {
+                    outToClient.writeBytes(WINDSPEED_SENSOR_DATA.get(WINDSPEED_SENSOR_DATA.size() - 1).toString());
+                }
                 outToClient.writeBytes(HTML_END);
                 outToClient.close();
                 break;
