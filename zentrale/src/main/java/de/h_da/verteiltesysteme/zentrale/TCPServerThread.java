@@ -10,32 +10,28 @@ public class TCPServerThread extends Thread implements SensorData {
         this.socket = socket;
     }
 
+    /*
+     * Die Anfrage des Clients wird zeilenweise eingelesen in die ArrayList clientMessage bis Zeilenende
+     * Dann wird die Funktion respondToClient aufgerufen, um die Anfrage zu interpretieren und zu bearbeiten
+     */
     @Override
     public void run() {
         try {
-            receiveDataFromClient();
+            InputStream input = socket.getInputStream();
+            inFromClient = new BufferedReader(new InputStreamReader(input));
+
+            String line = inFromClient.readLine();
+            while( !line.isEmpty() ) {
+                clientMessage.add(line);
+                line = inFromClient.readLine();
+            }
+            respondToClient();
+            clientMessage.clear();
+            outToClient.close();
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /*
-    * Die Anfrage des Clients wird zeilenweise eingelesen in die ArrayList clientMessage bis Zeilenende
-    * Dann wird die Funktion respondToClient aufgerufen, um die Anfrage zu interpretieren und zu bearbeiten
-    */
-    public static void receiveDataFromClient() throws IOException {
-        InputStream input = socket.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
-        String line = reader.readLine();
-        while( !line.isEmpty() ) {
-            clientMessage.add(line);
-//            System.out.println(line);
-            line = reader.readLine();
-        }
-        respondToClient();
-        clientMessage.clear();
-        socket.close();
     }
 
     /*
@@ -95,35 +91,37 @@ public class TCPServerThread extends Thread implements SensorData {
 
         outToClient.writeBytes(HTML_START);
 
+        outToClient.writeBytes("Temperatursensordaten:<br>");
         for(Temperature t : TEMPERATURE_SENSOR_DATA) {
             outToClient.writeBytes(t.toString());
             outToClient.writeBytes("<br>");
         }
 
+        outToClient.writeBytes("<br>Niederschlagssensordaten:<br>");
         for(Rainfall n : RAINFALL_SENSOR_DATA) {
             outToClient.writeBytes(n.toString());
             outToClient.writeBytes("<br>");
         }
 
+        outToClient.writeBytes("<br>Helligkeitssensordaten:<br>");
         for(Brightness b : BRIGHTNESS_SENSOR_DATA) {
             outToClient.writeBytes(b.toString());
             outToClient.writeBytes("<br>");
         }
 
+        outToClient.writeBytes("<br>Windgeschwindigkeitssensordaten:<br>");
         for(Wind w : WINDSPEED_SENSOR_DATA) {
             outToClient.writeBytes(w.toString());
             outToClient.writeBytes("<br>");
         }
 
         outToClient.writeBytes(HTML_END);
-        outToClient.close();
     }
 
     static void printBadRequestResponse() throws IOException {
         outToClient.writeBytes(htmlResponseCodeBadRequest);
         outToClient.writeBytes(htmlContentType);
         outToClient.writeBytes("\r\n");
-        outToClient.close();
     }
 
     static void printIndexPage() throws IOException {
@@ -131,7 +129,6 @@ public class TCPServerThread extends Thread implements SensorData {
         outToClient.writeBytes(htmlContentType);
         outToClient.writeBytes("\r\n");
         outToClient.writeBytes(HTML_INDEX);
-        outToClient.close();
     }
 
     static void printHistoryOfSensorData(String typeofSensor) throws IOException {
@@ -139,9 +136,9 @@ public class TCPServerThread extends Thread implements SensorData {
         outToClient.writeBytes(htmlContentType);
         outToClient.writeBytes("\r\n");
 
+        outToClient.writeBytes(HTML_START);
         switch (typeofSensor) {
             case "Temperatur":
-                outToClient.writeBytes(HTML_START);
                 if (TEMPERATURE_SENSOR_DATA.isEmpty()){
                     outToClient.writeBytes("TEMPERATURE_SENSOR_DATA is empty<br>");
                 } else {
@@ -150,11 +147,8 @@ public class TCPServerThread extends Thread implements SensorData {
                         outToClient.writeBytes("<br>");
                     }
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
                 break;
             case "Niederschlag":
-                outToClient.writeBytes(HTML_START);
                 if (RAINFALL_SENSOR_DATA.isEmpty()){
                     outToClient.writeBytes("RAINFALL_SENSOR_DATA is empty<br>");
                 } else {
@@ -163,11 +157,8 @@ public class TCPServerThread extends Thread implements SensorData {
                         outToClient.writeBytes("<br>");
                     }
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
                 break;
             case "Helligkeit":
-                outToClient.writeBytes(HTML_START);
                 if (BRIGHTNESS_SENSOR_DATA.isEmpty()){
                     outToClient.writeBytes("BRIGHTNESS_SENSOR_DATA is empty<br>");
                 } else {
@@ -176,10 +167,8 @@ public class TCPServerThread extends Thread implements SensorData {
                         outToClient.writeBytes("<br>");
                     }
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
+                break;
             case "Wind":
-                outToClient.writeBytes(HTML_START);
                 if (WINDSPEED_SENSOR_DATA.isEmpty()){
                     outToClient.writeBytes("WINDSPEED_SENSOR_DATA is empty<br>");
                 } else {
@@ -188,11 +177,11 @@ public class TCPServerThread extends Thread implements SensorData {
                         outToClient.writeBytes("<br>");
                     }
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
+                break;
             default:
-                outToClient.close();
+                ;
         }
+        outToClient.writeBytes(HTML_END);
     }
 
     static void printSingleSensorData(String typeofSensor) throws IOException {
@@ -208,8 +197,6 @@ public class TCPServerThread extends Thread implements SensorData {
                 } else {
                     outToClient.writeBytes(TEMPERATURE_SENSOR_DATA.get(TEMPERATURE_SENSOR_DATA.size() - 1).toString());
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
                 break;
             case "Niederschlag":
                 if (RAINFALL_SENSOR_DATA.isEmpty()) {
@@ -217,8 +204,6 @@ public class TCPServerThread extends Thread implements SensorData {
                 } else {
                     outToClient.writeBytes(RAINFALL_SENSOR_DATA.get(RAINFALL_SENSOR_DATA.size() - 1).toString());
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
                 break;
             case "Helligkeit":
                 if (BRIGHTNESS_SENSOR_DATA.isEmpty()) {
@@ -226,8 +211,6 @@ public class TCPServerThread extends Thread implements SensorData {
                 } else {
                     outToClient.writeBytes(BRIGHTNESS_SENSOR_DATA.get(BRIGHTNESS_SENSOR_DATA.size() - 1).toString());
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
                 break;
             case "Wind":
                 if (WINDSPEED_SENSOR_DATA.isEmpty()) {
@@ -235,13 +218,11 @@ public class TCPServerThread extends Thread implements SensorData {
                 } else {
                     outToClient.writeBytes(WINDSPEED_SENSOR_DATA.get(WINDSPEED_SENSOR_DATA.size() - 1).toString());
                 }
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
                 break;
             default:
-                outToClient.writeBytes(HTML_END);
-                outToClient.close();
+                ;
         }
+        outToClient.writeBytes(HTML_END);
     }
 
     private static ArrayList<String> clientMessage = new ArrayList<>();
