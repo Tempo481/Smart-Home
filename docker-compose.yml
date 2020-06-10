@@ -83,12 +83,6 @@ services:
             - "50000:50000"
             - "80:80"
         
-        environment:
-            DB_USERNAME: "root"
-            DB_PASSWORD: "halloWelt123"
-            DB_HOST: "172.20.0.20"
-            DB_PORT: "27017"
-        
         networks:
             verteilte_systeme:
                 ipv4_address: "172.20.0.2"
@@ -102,6 +96,12 @@ services:
             context: ./anbieter
             dockerfile: dockerfile
         image: verteilte_systeme/anbieter:latest
+        
+        environment:
+            DB_USERNAME: "root"
+            DB_PASSWORD: "halloWelt123"
+            DB_HOST: "172.20.0.20"
+            DB_PORT: "27017"
 
         networks:
             verteilte_systeme:

@@ -1,4 +1,4 @@
-package de.h_da.verteiltesysteme.zentrale.db;
+package de.h_da.verteiltesysteme.anbieter.db;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
