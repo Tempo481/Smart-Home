@@ -1,15 +1,14 @@
 package de.h_da.verteiltesysteme.zentrale;
 
-import java.time.Instant;
-import java.util.TimeZone;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
+import org.json.JSONObject;
 
 public class UDPServer extends Thread implements SensorData {
 
@@ -48,7 +47,6 @@ public class UDPServer extends Thread implements SensorData {
             int port = receivePacket.getPort();
 
             System.out.println("[" + inetAddress + "][" + port + "] " + message);
-//            System.out.println("RECEIVED from " + inetAddress + " Port: " + port + ": " + message);
         }
     }
 
@@ -63,7 +61,7 @@ public class UDPServer extends Thread implements SensorData {
         String name = obj.getString("name");
         String sensor_type = obj.getString("sensor_type");
         float value = obj.getInt("value");
-        System.out.println(timestampLong + " " + name + " " + sensor_type + " " + value);
+        System.out.println(timestampLong + " " + name + " " + sensor_type + " " + value + " Latenz: " + Long.toString(System.currentTimeMillis() - timestampLong));
 
         LocalDateTime localDateTime = LocalDateTime.ofInstant(
             Instant.ofEpochMilli(timestampLong),
@@ -77,14 +75,19 @@ public class UDPServer extends Thread implements SensorData {
                 TEMPERATURE_SENSOR_DATA.add(temperature);
                 break;
             }
-            case "Brightness": {
-                Brightness brightness = new Brightness(timestamp, value, sensor_type, name);
+            case "Helligkeit": {
+                Brightness brightness = new Brightness(value, timestamp, sensor_type, name);
                 BRIGHTNESS_SENSOR_DATA.add(brightness);
                 break;
             }
-            case "WindSpeed": {
-                WindSpeed windSpeed = new WindSpeed(value, timestamp, sensor_type, name);
-                WINDSPEED_SENSOR_DATA.add(windSpeed);
+            case "Wind": {
+                Wind wind = new Wind(value, timestamp, sensor_type, name);
+                WINDSPEED_SENSOR_DATA.add(wind);
+                break;
+            }
+            case "Niederschlag": {
+                Rainfall rainfall = new Rainfall(value, timestamp, sensor_type, name);
+                RAINFALL_SENSOR_DATA.add(rainfall);
                 break;
             }
         }

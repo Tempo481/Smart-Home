@@ -2,9 +2,9 @@ package de.h_da.verteiltesysteme.zentrale;
 
 import java.sql.Timestamp;
 
-public class WindSpeed {
+public class Wind {
 
-    public WindSpeed(float windspeed, Timestamp timestamp, String typeOfSensor, String nameOfSensor) {
+    public Wind(float windspeed, Timestamp timestamp, String typeOfSensor, String nameOfSensor) {
         this.windspeed = windspeed;
         this.timestamp = timestamp;
         this.typeOfSensor = typeOfSensor;

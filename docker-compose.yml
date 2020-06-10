@@ -81,10 +81,18 @@ services:
 
         ports:
             - "50000:50000"
+            - "80:80"
+        
+        environment:
+            DB_USERNAME: "root"
+            DB_PASSWORD: "halloWelt123"
+            DB_HOST: "172.20.0.20"
+            DB_PORT: "27017"
         
         networks:
             verteilte_systeme:
                 ipv4_address: "172.20.0.2"
+                
 
 
 # Anbieter
@@ -99,6 +107,22 @@ services:
             verteilte_systeme:
                 ipv4_address: "172.20.0.3"
 
+# Datenbank (MongoDB)
+    datenbank:
+        container_name: "mongodb"
+        image: mongo
+        restart: always
+        
+        ports:
+            - "27017:27017"
+        
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: halloWelt123
+            
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.20"
 
 # Management Tool
     portainer:
@@ -115,6 +139,20 @@ services:
             verteilte_systeme:
                 ipv4_address: "172.20.0.10"
         
+# Datenbank Management Tool
+    mongoku:
+        container_name: "mongoku"
+        image: huggingface/mongoku
+        
+        ports:
+            - "82:3100"
+        
+        environment:
+            MONGOKU_DEFAULT_HOST: mongodb://root:halloWelt123@172.20.0.20:27017
+        
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.9"
         
 
 #Volumes
