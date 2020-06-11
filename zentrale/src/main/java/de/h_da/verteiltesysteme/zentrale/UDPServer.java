@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
+
+import de.h_da.verteiltesysteme.zentrale.sensor.*;
 import org.json.JSONObject;
 
 public class UDPServer extends Thread implements SensorData {
@@ -68,6 +70,9 @@ public class UDPServer extends Thread implements SensorData {
             TimeZone.getDefault().toZoneId());
 
         Timestamp timestamp = Timestamp.valueOf(localDateTime);
+
+        Sensor sensor = new Sensor(sensor_type, name, value, timestampLong);
+        SENSOR_ARRAY_LIST.add(sensor);
 
         switch (sensor_type) {
             case "Temperatur": {

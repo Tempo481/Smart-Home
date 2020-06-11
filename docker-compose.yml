@@ -82,6 +82,7 @@ services:
         ports:
             - "50000:50000"
             - "80:80"
+            - "9090:9090"
         
         networks:
             verteilte_systeme:
