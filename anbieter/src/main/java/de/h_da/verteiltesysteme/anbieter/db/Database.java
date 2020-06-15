@@ -1,15 +1,15 @@
 package de.h_da.verteiltesysteme.anbieter.db;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.Document;
 
 public class Database {
     private static final String DATABASE_NAME = "verteilte_systeme";
@@ -17,7 +17,7 @@ public class Database {
 
     private MongoClient client;
     private MongoClientURI clientURI;
-    private DBCollection dbCollection;
+    private MongoCollection<Document> dbCollection;
 
     private static Database instance;
 
@@ -49,12 +49,13 @@ public class Database {
 
     /**
      * Connects to Database
-     * @throws UnknownHostException on connection error
      */
-    public void connect() throws UnknownHostException {
-        client = new MongoClient(clientURI);
-        DB database = client.getDB(DATABASE_NAME);
-        dbCollection = database.getCollection(DATABASE_COLLECTION);
+    public void connect(){
+        if(!isConnected()){
+            client = new MongoClient(clientURI);
+            MongoDatabase database = client.getDatabase(DATABASE_NAME);
+            dbCollection = database.getCollection(DATABASE_COLLECTION);
+        }
     }
 
     /**
@@ -70,7 +71,17 @@ public class Database {
      * @param sensorData Data to store to database
      */
     public void insertSensorData(SensorData sensorData){
-        dbCollection.insert(sensorData.toDatabaseObject());
+        dbCollection.insertOne(sensorData.toDatabaseObject());
+    }
+
+    public void insertManySensorData(List<SensorData> sensorDataList){
+        List<Document> documents = new ArrayList<>();
+
+        for (SensorData sensorData: sensorDataList) {
+            documents.add(sensorData.toDatabaseObject());
+        }
+
+        dbCollection.insertMany(documents);
     }
 
     /**
@@ -82,7 +93,7 @@ public class Database {
      * @return a list of sensor data
      */
     public List<SensorData> getSensorDataAfterTimestamp(long timestamp, String sensorName, String sensorTyp){
-        DBObject query = new BasicDBObject();
+        Document query = new Document();
         query.put(SensorData.FIELD_TIMESTAMP, new BasicDBObject("$gt", timestamp));
         if(sensorName != null){
             query.put(SensorData.FIELD_NAME_OF_SENSOR, sensorName);
@@ -92,7 +103,7 @@ public class Database {
             query.put(SensorData.FIELD_TYPE_OF_SENSOR, sensorTyp);
         }
 
-        DBCursor cursor = dbCollection.find(query);
+        MongoCursor<Document> cursor = dbCollection.find(query).iterator();
 
         List<SensorData> sensorDataList = new ArrayList<>();
         while (cursor.hasNext()){
@@ -114,7 +125,7 @@ public class Database {
      * @return a list of sensor data
      */
     public List<SensorData> getLastXEntries(int limit, String sensorName, String sensorTyp){
-        DBObject query = new BasicDBObject();
+        Document query = new Document();
         if(sensorName != null){
             query.put(SensorData.FIELD_NAME_OF_SENSOR, sensorName);
         }
@@ -123,7 +134,7 @@ public class Database {
             query.put(SensorData.FIELD_TYPE_OF_SENSOR, sensorTyp);
         }
 
-        DBCursor cursor = dbCollection.find(query).limit(limit);
+        MongoCursor<Document> cursor = dbCollection.find(query).limit(limit).iterator();
 
         List<SensorData> sensorDataList = new ArrayList<>();
         while (cursor.hasNext()){
