@@ -5,17 +5,14 @@ import de.h_da.verteiltesysteme.anbieter.db.SensorData;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TSSLTransportFactory;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TTransportException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ThriftClient extends Thread {
 
-    private long latestTimestamp;
     @Override
     public void run() {
         TTransport transport = null;
@@ -43,24 +40,21 @@ public class ThriftClient extends Thread {
     private static void perform(SensorThrift.Client client) throws TException {
         try {
             List<SensorDataThrift> sensorDataThriftArrayList = client.getSensorDataList();
-            if( sensorDataThriftArrayList.size() < 1) {
-                System.out.println("sensorDataThriftArrayList has size " + sensorDataThriftArrayList.size());
-            } else {
 
-                List<SensorData> sensorDataList = new ArrayList<>();
+            List<SensorData> sensorDataList = new ArrayList<>();
 
-                for (SensorDataThrift sensorDataThrift : sensorDataThriftArrayList) {
-                    sensorDataList.add(new SensorData(
-                        sensorDataThrift.getTypeOfSensor(),
-                        sensorDataThrift.getNameOfSensor(),
-                        sensorDataThrift.getTimestamp(),
-                        sensorDataThrift.getValue()));
-                    System.out.println(sensorDataThrift.toString());
-                }
-                Database databaseInstance = Database.getInstance();
-                databaseInstance.connect();
-                databaseInstance.insertManySensorData(sensorDataList);
+            for (SensorDataThrift sensorDataThrift : sensorDataThriftArrayList) {
+                sensorDataList.add(new SensorData(
+                    sensorDataThrift.getTypeOfSensor(),
+                    sensorDataThrift.getNameOfSensor(),
+                    sensorDataThrift.getTimestamp(),
+                    sensorDataThrift.getValue()));
             }
+
+            System.out.println(String.format("%s new Entries found", sensorDataList.size()));
+            Database databaseInstance = Database.getInstance();
+            databaseInstance.connect();
+            databaseInstance.insertManySensorData(sensorDataList);
         } catch (TException e) {
             e.printStackTrace();
         }
