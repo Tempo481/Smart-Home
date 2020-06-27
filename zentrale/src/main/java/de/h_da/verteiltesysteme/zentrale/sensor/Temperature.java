@@ -1,11 +1,11 @@
-package de.h_da.verteiltesysteme.zentrale;
+package de.h_da.verteiltesysteme.zentrale.sensor;
 
 import java.sql.Timestamp;
 
-public class Wind {
+public class Temperature {
 
-    public Wind(float windspeed, Timestamp timestamp, String typeOfSensor, String nameOfSensor) {
-        this.windspeed = windspeed;
+    public Temperature(float temperatur, Timestamp timestamp, String typeOfSensor, String nameOfSensor) {
+        this.temperatur = temperatur;
         this.timestamp = timestamp;
         this.typeOfSensor = typeOfSensor;
         this.nameOfSensor = nameOfSensor;
@@ -13,15 +13,15 @@ public class Wind {
 
     @Override
     public String toString() {
-        return "WindSpeed{" +
-                "windspeed=" + windspeed +
+        return "Temperatur{" +
+                "temperatur=" + temperatur +
                 ", timestamp=" + timestamp +
                 ", typeOfSensor='" + typeOfSensor + '\'' +
                 ", nameOfSensor='" + nameOfSensor + '\'' +
                 '}';
     }
 
-    private float windspeed;
+    private float temperatur;
     private Timestamp timestamp;
     private String typeOfSensor = "Temperature";
     private String nameOfSensor;

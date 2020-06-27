@@ -1,11 +1,11 @@
-package de.h_da.verteiltesysteme.zentrale;
+package de.h_da.verteiltesysteme.zentrale.sensor;
 
 import java.sql.Timestamp;
 
-public class Rainfall {
+public class Brightness {
 
-    public Rainfall(float rainfall, Timestamp timestamp, String typeOfSensor, String nameOfSensor) {
-        this.rainfall = rainfall;
+    public Brightness(float brightness, Timestamp timestamp, String typeOfSensor, String nameOfSensor) {
+        this.brightness = brightness;
         this.timestamp = timestamp;
         this.typeOfSensor = typeOfSensor;
         this.nameOfSensor = nameOfSensor;
@@ -13,16 +13,16 @@ public class Rainfall {
 
     @Override
     public String toString() {
-        return "Rainfall{" +
-                "rainfall=" + rainfall +
+        return "Brightness{" +
+                "brightness=" + brightness +
                 ", timestamp=" + timestamp +
                 ", typeOfSensor='" + typeOfSensor + '\'' +
                 ", nameOfSensor='" + nameOfSensor + '\'' +
                 '}';
     }
 
-    private float rainfall;
+    private float brightness;
     private Timestamp timestamp;
-    private String typeOfSensor = "Rainfall";
+    private String typeOfSensor = "Brightness";
     private String nameOfSensor;
 }

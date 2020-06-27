@@ -1,7 +1,8 @@
-package de.h_da.verteiltesysteme.zentrale.db;
+package de.h_da.verteiltesysteme.anbieter.db;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.bson.Document;
 import org.json.JSONObject;
 
 /**
@@ -17,10 +18,10 @@ public class SensorData {
     private String typeOfSensor;
     private String nameOfSensor;
     private long timestamp;
-    private float value;
+    private double value;
 
     //Default Constructor
-    public SensorData(String typeOfSensor, String nameOfSensor, long timestamp, float value){
+    public SensorData(String typeOfSensor, String nameOfSensor, long timestamp, double value){
         this.typeOfSensor = typeOfSensor;
         this.nameOfSensor = nameOfSensor;
         this.timestamp = timestamp;
@@ -43,6 +44,13 @@ public class SensorData {
         this.value = jsonObject.getFloat(FIELD_VALUE);
     }
 
+    public SensorData(Document document) {
+        this(document.getString(FIELD_TYPE_OF_SENSOR),
+            document.getString(FIELD_NAME_OF_SENSOR),
+            document.getLong(FIELD_TIMESTAMP),
+            document.getDouble(FIELD_VALUE));
+    }
+
     public String getTypeOfSensor() {
         return typeOfSensor;
     }
@@ -55,17 +63,17 @@ public class SensorData {
         return timestamp;
     }
 
-    public float getValue() {
+    public double getValue() {
         return value;
     }
 
-    //Database Exporter
-    public DBObject toDatabaseObject(){
-        return new BasicDBObject()
-            .append(FIELD_TYPE_OF_SENSOR, typeOfSensor)
-            .append(FIELD_NAME_OF_SENSOR, nameOfSensor)
-            .append(FIELD_TIMESTAMP, timestamp)
-            .append(FIELD_VALUE, value);
+    public Document toDatabaseObject(){
+        Document document = new Document();
+        document.put(FIELD_TYPE_OF_SENSOR, typeOfSensor);
+        document.put(FIELD_NAME_OF_SENSOR, nameOfSensor);
+        document.put(FIELD_TIMESTAMP, timestamp);
+        document.put(FIELD_VALUE, value);
+        return document;
     }
 
     //Json Exporter

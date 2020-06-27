@@ -1,5 +1,7 @@
 package de.h_da.verteiltesysteme.zentrale;
 
+import de.h_da.verteiltesysteme.zentrale.sensor.*;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;

@@ -10,7 +10,7 @@ RUN mvn package
 #Finaler Container
 FROM openjdk:8
 
-COPY --from=BUILD /tmp/target/anbieter-* /app/anbieter.jar
+COPY --from=BUILD /tmp/target/anbieter-*-with-dependencies.jar /app/anbieter.jar
 WORKDIR /app
 
 CMD ["java", "-jar", "/app/anbieter.jar"]
