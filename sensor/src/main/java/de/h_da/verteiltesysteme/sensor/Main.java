@@ -1,10 +1,8 @@
 package de.h_da.verteiltesysteme.sensor;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 public class Main {
 
@@ -16,8 +14,8 @@ public class Main {
 
         String sensorName = System.getenv("SENSOR_NAME");
         String sensorTypString = System.getenv("SENSOR_TYPE");
-        String serverIp = System.getenv("ZENTRALE_IP");
-        String serverPortString = System.getenv("ZENTRALE_PORT");
+        String serverIp = System.getenv("MQTT_IP");
+        String serverPortString = System.getenv("MQTT_PORT");
 
         logger.info(
             String.format("Sensor Parameter: Name: '%s' Typ: '%s' Server Ip: '%s' Server Port: '%s' ",
@@ -37,11 +35,11 @@ public class Main {
         }
 
         DataGenerator dataGenerator = new DataGenerator(sensorName, sensorTyp);
-        UDPClient udpClient;
+        MQTTClient mqttClient;
 
         try {
-            udpClient = new UDPClient(serverIp, serverPort);
-        } catch (UnknownHostException | SocketException e) {
+            mqttClient = new MQTTClient(serverIp, serverPort);
+        } catch (MqttException e) {
             logger.warning("Cannot access Ip Socket, cannot proceed!");
             logger.warning(e.getMessage());
             throw new RuntimeException(e);
@@ -56,8 +54,8 @@ public class Main {
             logger.fine("Raw Sensor Data: " + message);
 
             try {
-                udpClient.sendData(message);
-            } catch (IOException e) {
+                mqttClient.sendData(message);
+            } catch (MqttException e) {
                 logger.warning("Could not send Sensor Data to Server!");
                 logger.warning(e.getMessage());
             }

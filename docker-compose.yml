@@ -13,8 +13,8 @@ services:
         environment:
             SENSOR_NAME: "Dachterrasse"
             SENSOR_TYPE: "Helligkeit"
-            ZENTRALE_IP: "172.20.0.2"
-            ZENTRALE_PORT: "50000"
+            MQTT_IP: "172.20.0.21"
+            MQTT_PORT: "1883"
 
         networks:
             verteilte_systeme:
@@ -30,8 +30,8 @@ services:
         environment:
             SENSOR_NAME: "Heizung Wohnzimmer"
             SENSOR_TYPE: "Temperatur"
-            ZENTRALE_IP: "172.20.0.2"
-            ZENTRALE_PORT: "50000"
+            MQTT_IP: "172.20.0.21"
+            MQTT_PORT: "1883"
 
         networks:
             verteilte_systeme:
@@ -47,8 +47,8 @@ services:
         environment:
             SENSOR_NAME: "Dachterrasse"
             SENSOR_TYPE: "Niederschlag"
-            ZENTRALE_IP: "172.20.0.2"
-            ZENTRALE_PORT: "50000"
+            MQTT_IP: "172.20.0.21"
+            MQTT_PORT: "1883"
 
         networks:
             verteilte_systeme:
@@ -64,8 +64,8 @@ services:
         environment:
             SENSOR_NAME: "Dach"
             SENSOR_TYPE: "Wind"
-            ZENTRALE_IP: "172.20.0.2"
-            ZENTRALE_PORT: "50000"
+            MQTT_IP: "172.20.0.21"
+            MQTT_PORT: "1883"
 
         networks:
             verteilte_systeme:
@@ -83,6 +83,10 @@ services:
             - "50000:50000"
             - "80:80"
             - "9090:9090"
+            
+        environment:
+            MQTT_IP: "172.20.0.21"
+            MQTT_PORT: "1883"
         
         networks:
             verteilte_systeme:
@@ -124,6 +128,21 @@ services:
         networks:
             verteilte_systeme:
                 ipv4_address: "172.20.0.20"
+
+# MQTT-Server
+
+    mqtt:
+        container_name: "mqtt_server"
+        image: eclipse-mosquitto
+        restart: always
+        
+        ports:
+            - "1883:1883"
+            - "9001:9001"
+        
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.21"
 
 # Management Tool
     portainer:

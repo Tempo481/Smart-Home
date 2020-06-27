@@ -17,12 +17,12 @@ public class SensorThriftHandler implements SensorThrift.Iface {
 
     @Override
     public List<SensorDataThrift> getSensorDataList() throws TException {
+        ArrayList<SensorDataThrift> sensorDataThriftArrayList = new ArrayList<>();
 
         if (SENSOR_ARRAY_LIST.size() < 12) {
             System.out.println("SENSOR_ARRAY_LIST has size " + SENSOR_ARRAY_LIST.size());
-            return null;
         } else {
-            ArrayList<SensorDataThrift> sensorDataThriftArrayList = new ArrayList<>();
+
 
             for (Sensor sensor : SENSOR_ARRAY_LIST) {
                 SensorDataThrift sensorDataThrift = new SensorDataThrift (sensor.getNameOfSensor(),
@@ -30,7 +30,7 @@ public class SensorThriftHandler implements SensorThrift.Iface {
                 sensorDataThriftArrayList.add(sensorDataThrift);
             }
             SENSOR_ARRAY_LIST.clear();
-            return sensorDataThriftArrayList;
         }
+        return sensorDataThriftArrayList;
     }
 }
