@@ -4,7 +4,7 @@ Bearbeiter:
 - Matthias Adrian  (Mtrk. 752237)
 - Jan Zipprich     (Mtrk. 757956)
 
-Version: 3 ([Milestone C](https://code.fbi.h-da.de/istjazipp/verteilte_systeme_mo5y-3/-/milestones/3) | Abgabe 15.06.20)
+Version: 4 ([Milestone D](https://code.fbi.h-da.de/istjazipp/verteilte_systeme_mo5y-3/-/milestones/3) | Abgabe 29.06.20)
 
 ### Systemanforderung:
 
