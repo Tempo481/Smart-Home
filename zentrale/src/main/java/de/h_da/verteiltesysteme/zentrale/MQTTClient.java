@@ -1,60 +1,50 @@
 package de.h_da.verteiltesysteme.zentrale;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import de.h_da.verteiltesysteme.zentrale.sensor.Brightness;
+import de.h_da.verteiltesysteme.zentrale.sensor.Rainfall;
+import de.h_da.verteiltesysteme.zentrale.sensor.Sensor;
+import de.h_da.verteiltesysteme.zentrale.sensor.SensorData;
+import de.h_da.verteiltesysteme.zentrale.sensor.Temperature;
+import de.h_da.verteiltesysteme.zentrale.sensor.Wind;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.TimeZone;
-
-import de.h_da.verteiltesysteme.zentrale.sensor.*;
+import java.util.UUID;
+import org.eclipse.paho.client.mqttv3.IMqttClient;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
-public class UDPServer extends Thread implements SensorData {
+public class MQTTClient implements SensorData {
+    private static final String TOPIC = "vs_sensoren";
 
-    @Override
-    public void run() {
-        try {
-            listenOnUDPSocketAndReceiveData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private IMqttClient mqttClient;
+
+    public MQTTClient(String hostname, int port) throws MqttException {
+        String publisherId = UUID.randomUUID().toString();
+        mqttClient = new MqttClient(String.format("tcp://%s:%s", hostname, port),publisherId);
     }
 
-    /*
-    * UDP Pakete werden empfangen und der Inhalt
-    * als String zur Funktion parseJSON übergeben.
-    */
-    public static void listenOnUDPSocketAndReceiveData() throws IOException {
-        DatagramSocket serverSocket = new DatagramSocket(50000);
-        DatagramPacket receivePacket = null;
-        System.out.println("listening on UDP Socket ...\n");
+    public void connect() throws MqttException {
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setConnectionTimeout(10);
+        mqttClient.connect(options);
 
-        long startTime;
-
-        while (true) {
-            byte[] receiveData = new byte[1024];
-            receivePacket = new DatagramPacket(receiveData, receiveData.length);
-            startTime = System.currentTimeMillis();
-            serverSocket.receive(receivePacket);
-            String message = new String(receivePacket.getData());
-            message = message.substring(0, message.indexOf('\u0000'));
-            try {
-                parseJSON(message);
-            }catch (Exception e){
-                System.out.println("There was an error while parsing SensorData:");
-                e.printStackTrace();
-            }
-
-            InetAddress inetAddress = receivePacket.getAddress();
-            int port = receivePacket.getPort();
-
-            System.out.println("[" + inetAddress + "][" + port + "][" + (System.currentTimeMillis()
-                - startTime) + "] " + message);
-        }
+        mqttClient.subscribe(TOPIC, this::handleMessage);
     }
+
+    private void handleMessage(String topic, MqttMessage message){
+        String payload = new String(message.getPayload());
+
+        System.out.println("[Payload received]" + payload);
+        parseJSON(payload);
+    }
+
 
     /*
     * Das Nachrichtenformat ist JSON, also wird der String aus dem UDP-Paket
@@ -67,7 +57,7 @@ public class UDPServer extends Thread implements SensorData {
         String name = obj.getString("name");
         String sensor_type = obj.getString("sensor_type");
         float value = obj.getInt("value");
-        System.out.println(timestampLong + " " + name + " " + sensor_type + " " + value + " Latenz: " + Long.toString(System.currentTimeMillis() - timestampLong));
+        System.out.println(timestampLong + " " + name + " " + sensor_type + " " + value);
 
         LocalDateTime localDateTime = LocalDateTime.ofInstant(
             Instant.ofEpochMilli(timestampLong),

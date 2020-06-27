@@ -23,7 +23,7 @@ public class TCPServerThread extends Thread implements SensorData {
             inFromClient = new BufferedReader(new InputStreamReader(input));
 
             String line = inFromClient.readLine();
-            while( !line.isEmpty() ) {
+            while(!line.equals("\r\n\r\n")) {
                 clientMessage.add(line);
                 line = inFromClient.readLine();
             }
@@ -233,7 +233,7 @@ public class TCPServerThread extends Thread implements SensorData {
     private static DataOutputStream outToClient = null;
 
     private static String htmlResponseCodeOk = "HTTP/1.1 200 Ok" + "\r\n";
-    private static String htmlResponseCodeBadRequest = "HTTP/1.1 400 Bad Request" + "\r\n";
+    private static String htmlResponseCodeBadRequest = "HTTP/1.1 404 Not Found" + "\r\n\r\n";
     private static String htmlContentType = "Content-Type: text/html" + "\r\n";
     private static String htmlContentLength = "Content-length: ";
 
@@ -252,7 +252,8 @@ public class TCPServerThread extends Thread implements SensorData {
     private static final String URIForAllData = "GET /AllSensorData/ HTTP/1.1";
 
     private static final String HTML_START = "<!DOCTYPE html>\n" +
-            "<html>\n" +
+            "<html lang='de'>\n" +
+            "<head><title>Verteilte Systeme - Sensor Daten</title></head>" +
             "<body>\n" +
             "\n" +
             "<h1>Sensorwert:</h1>";
@@ -261,42 +262,43 @@ public class TCPServerThread extends Thread implements SensorData {
             "</html>";
 
     private static final String HTML_INDEX = "<!DOCTYPE html>\n" +
-            "<html>\n" +
+            "<html lang='de'>\n" +
+            "<head><title>Verteilte Systeme - Sensor Daten</title></head>" +
             "<body>\n" +
             "\n" +
             "<h2>Index Sensordaten</h2>\n" +
             "\n" +
             "<h3>Alle Daten von allen Sensoren:</h3>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/AllSensorData/\">Alle Sensordaten</a>\n" +
+            "    <a href=\"/AllSensorData/\">Alle Sensordaten</a>\n" +
             "</p>\n" +
             "\n" +
             "<h3>Alle Daten eines Sensors (Historie):</h3>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/TemperatureHistory/\">Alle Temperaturdaten</a>\n" +
+            "    <a href=\"/TemperatureHistory/\">Alle Temperaturdaten</a>\n" +
             "</p>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/WindHistory/\">Alle Windgeschwindigkeitsdaten</a>\n" +
+            "    <a href=\"/WindHistory/\">Alle Windgeschwindigkeitsdaten</a>\n" +
             "</p>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost/BrightnessHistory/\">Alle Helligkeitsdaten</a>\n" +
+            "    <a href=\"/BrightnessHistory/\">Alle Helligkeitsdaten</a>\n" +
             "</p>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost/RainfallHistory/\">Alle Niederschlagsdaten</a>\n" +
+            "    <a href=\"/RainfallHistory/\">Alle Niederschlagsdaten</a>\n" +
             "</p>\n" +
             "\n" +
             "<h3>Aktuellste Sensorwerte:</h3>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/Temperature/\">Temperatur</a>\n" +
+            "    <a href=\"/Temperature/\">Temperatur</a>\n" +
             "</p>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/Wind/\">Windgeschwindigkeit</a>\n" +
+            "    <a href=\"/Wind/\">Windgeschwindigkeit</a>\n" +
             "</p>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/Brightness/\">Helligkeit</a>\n" +
+            "    <a href=\"/Brightness/\">Helligkeit</a>\n" +
             "</p>\n" +
             "<p>\n" +
-            "    <a href=\"http://localhost:80/Rainfall/\">Niederschlag</a>\n" +
+            "    <a href=\"/Rainfall/\">Niederschlag</a>\n" +
             "</p>\n" +
             "\n" +
             "</body>\n" +
