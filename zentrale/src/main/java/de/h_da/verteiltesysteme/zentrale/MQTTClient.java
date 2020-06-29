@@ -41,7 +41,7 @@ public class MQTTClient implements SensorData {
     private void handleMessage(String topic, MqttMessage message){
         String payload = new String(message.getPayload());
 
-        System.out.println("[Payload received]" + payload);
+        System.out.println("[Payload received](" + SENSOR_ARRAY_LIST.size() + " queued)" + payload);
         parseJSON(payload);
     }
 

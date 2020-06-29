@@ -81,6 +81,10 @@ public class Database {
             documents.add(sensorData.toDatabaseObject());
         }
 
+        if(documents.isEmpty()){
+            return;
+        }
+
         dbCollection.insertMany(documents);
     }
 
