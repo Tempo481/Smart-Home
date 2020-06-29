@@ -40,7 +40,7 @@ public class MQTTClient {
     public void sendData(String data) throws MqttException {
         MqttMessage message = new MqttMessage(data.getBytes());
 
-        message.setQos(0);
+        message.setQos(1);
         message.setRetained(true);
         mqttClient.publish(TOPIC, message);
     }
