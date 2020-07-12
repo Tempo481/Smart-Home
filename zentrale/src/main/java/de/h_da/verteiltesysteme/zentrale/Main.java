@@ -10,6 +10,8 @@ public class Main {
         String serverIp = System.getenv("MQTT_IP");
         int serverPort = Integer.parseInt(System.getenv("MQTT_PORT"));
 
+
+
         try {
             MQTTClient mqttClient = new MQTTClient(serverIp, serverPort);
             mqttClient.connect();

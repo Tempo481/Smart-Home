@@ -1,4 +1,4 @@
-package de.h_da.verteiltesysteme.zentrale.thrift;
+package de.h_da.verteiltesysteme.anbieter.thrift;
 
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
@@ -25,10 +25,9 @@ public class ThriftServer extends Thread {
     public static void simple(SensorThrift.Processor processor) {
         try {
             TServerTransport serverTransport = new TServerSocket(9090);
-//            TServer server = new TSimpleServer(new TServer.Args(serverTransport).processor(processor));
 
             // Use this for a multithreaded server
-             TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
+            TServer server = new TThreadPoolServer(new TThreadPoolServer.Args(serverTransport).processor(processor));
 
             System.out.println("Starting the simple server...");
             server.serve();
@@ -36,5 +35,4 @@ public class ThriftServer extends Thread {
             e.printStackTrace();
         }
     }
-
 }

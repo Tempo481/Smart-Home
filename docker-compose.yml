@@ -13,7 +13,7 @@ services:
         environment:
             SENSOR_NAME: "Dachterrasse"
             SENSOR_TYPE: "Helligkeit"
-            MQTT_IP: "172.20.0.21"
+            MQTT_IP: "172.20.0.25"
             MQTT_PORT: "1883"
 
         networks:
@@ -30,7 +30,7 @@ services:
         environment:
             SENSOR_NAME: "Heizung Wohnzimmer"
             SENSOR_TYPE: "Temperatur"
-            MQTT_IP: "172.20.0.21"
+            MQTT_IP: "172.20.0.25"
             MQTT_PORT: "1883"
 
         networks:
@@ -47,7 +47,7 @@ services:
         environment:
             SENSOR_NAME: "Dachterrasse"
             SENSOR_TYPE: "Niederschlag"
-            MQTT_IP: "172.20.0.21"
+            MQTT_IP: "172.20.0.25"
             MQTT_PORT: "1883"
 
         networks:
@@ -64,7 +64,7 @@ services:
         environment:
             SENSOR_NAME: "Dach"
             SENSOR_TYPE: "Wind"
-            MQTT_IP: "172.20.0.21"
+            MQTT_IP: "172.20.0.25"
             MQTT_PORT: "1883"
 
         networks:
@@ -85,8 +85,14 @@ services:
             - "9090:9090"
             
         environment:
-            MQTT_IP: "172.20.0.21"
+            MQTT_IP: "172.20.0.25"
             MQTT_PORT: "1883"
+            ANBIETER_A_IP: "172.20.0.3"
+            ANBIETER_A_PORT: "9090"
+            ANBIETER_B_IP: "172.20.0.4"
+            ANBIETER_B_PORT: "9090"
+            ANBIETER_C_IP: "172.20.0.5"
+            ANBIETER_C_PORT: "9090"
         
         networks:
             verteilte_systeme:
@@ -95,26 +101,84 @@ services:
 
 
 # Anbieter
-    anbieter:
-        container_name: "anbieter"
+    anbieter1:
+        container_name: "anbieter1"
         build:
             context: ./anbieter
             dockerfile: dockerfile
         image: verteilte_systeme/anbieter:latest
+        
+        ports:
+            - "9091:9090"
         
         environment:
             DB_USERNAME: "root"
             DB_PASSWORD: "halloWelt123"
             DB_HOST: "172.20.0.20"
             DB_PORT: "27017"
+            ZENTRALE_IP: "172.20.0.2"
+            ANBIETER_A_IP: "172.20.0.4"
+            ANBIETER_A_PORT: "9090"
+            ANBIETER_B_IP: "172.20.0.5"
+            ANBIETER_B_PORT: "9090"
 
         networks:
             verteilte_systeme:
                 ipv4_address: "172.20.0.3"
+    
+    anbieter2:
+        container_name: "anbieter2"
+        build:
+            context: ./anbieter
+            dockerfile: dockerfile
+        image: verteilte_systeme/anbieter:latest
+        
+        ports:
+            - "9092:9090"
+        
+        environment:
+            DB_USERNAME: "root"
+            DB_PASSWORD: "halloWelt123"
+            DB_HOST: "172.20.0.21"
+            DB_PORT: "27017"
+            ZENTRALE_IP: "172.20.0.2"
+            ANBIETER_A_IP: "172.20.0.3"
+            ANBIETER_A_PORT: "9090"
+            ANBIETER_B_IP: "172.20.0.5"
+            ANBIETER_B_PORT: "9090"
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.4"
+    
+    anbieter3:
+        container_name: "anbieter3"
+        build:
+            context: ./anbieter
+            dockerfile: dockerfile
+        image: verteilte_systeme/anbieter:latest
+        
+        ports:
+            - "9093:9090"
+        
+        environment:
+            DB_USERNAME: "root"
+            DB_PASSWORD: "halloWelt123"
+            DB_HOST: "172.20.0.22"
+            DB_PORT: "27017"
+            ZENTRALE_IP: "172.20.0.2"
+            ANBIETER_A_IP: "172.20.0.3"
+            ANBIETER_A_PORT: "9090"
+            ANBIETER_B_IP: "172.20.0.4"
+            ANBIETER_B_PORT: "9090"
+
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.5"
 
 # Datenbank (MongoDB)
-    datenbank:
-        container_name: "mongodb"
+    datenbank1:
+        container_name: "mongodb1"
         image: mongo
         restart: always
         
@@ -129,6 +193,37 @@ services:
             verteilte_systeme:
                 ipv4_address: "172.20.0.20"
 
+    datenbank2:
+        container_name: "mongodb2"
+        image: mongo
+        restart: always
+        
+        ports:
+            - "27018:27017"
+        
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: halloWelt123
+            
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.21"
+
+    datenbank3:
+        container_name: "mongodb3"
+        image: mongo
+        restart: always
+        
+        ports:
+            - "27019:27017"
+        
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: halloWelt123
+            
+        networks:
+            verteilte_systeme:
+                ipv4_address: "172.20.0.22"
 # MQTT-Server
 
     mqtt:
@@ -142,7 +237,7 @@ services:
         
         networks:
             verteilte_systeme:
-                ipv4_address: "172.20.0.21"
+                ipv4_address: "172.20.0.25"
 
 # Management Tool
     portainer:
@@ -173,6 +268,7 @@ services:
         networks:
             verteilte_systeme:
                 ipv4_address: "172.20.0.9"
+
         
 
 #Volumes

@@ -6,9 +6,9 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.print.Doc;
 import org.bson.Document;
 
 public class Database {
@@ -42,6 +42,7 @@ public class Database {
     public static Database getInstance(){
         if(instance == null){
             instance = new Database();
+            instance.connect();
         }
 
         return instance;
@@ -50,7 +51,7 @@ public class Database {
     /**
      * Connects to Database
      */
-    public void connect(){
+    private void connect(){
         if(!isConnected()){
             client = new MongoClient(clientURI);
             MongoDatabase database = client.getDatabase(DATABASE_NAME);
@@ -152,4 +153,63 @@ public class Database {
         return getLastXEntries(limit, null, null);
     }
 
+    public long getLastSequenceNumber(){
+
+        //Get start if the current sequence
+        Document query = new Document();
+        query.put(SensorData.FIELD_SEQUENC_NUMBER, 0);
+        MongoCursor<Document> cursor = dbCollection.find(query)
+            .sort(new Document(SensorData.FIELD_TIMESTAMP, -1))
+            .limit(1).iterator();
+
+        long sequenceTimestamp = -1;
+        if(cursor.hasNext()){
+            sequenceTimestamp = cursor.next().getLong(SensorData.FIELD_TIMESTAMP);
+        }
+
+        query = new Document(SensorData.FIELD_TIMESTAMP, new Document("$gt", sequenceTimestamp));
+
+        //Get Last Elements in the current sequence
+        cursor = dbCollection.find(query).sort(new Document(SensorData.FIELD_SEQUENC_NUMBER, -1)).limit(1).iterator();
+
+        long sequenceNumber = 0;
+        if(cursor.hasNext()){
+            sequenceNumber = cursor.next().getLong(SensorData.FIELD_SEQUENC_NUMBER);
+        }else{
+            System.out.println("Warning no Sequence Number was found?!");
+        }
+
+        return sequenceNumber;
+    }
+
+    public long getLastTimestamp(){
+        MongoCursor<Document> cursor = dbCollection.find().sort(new Document(SensorData.FIELD_TIMESTAMP, -1)).limit(1).iterator();
+
+        if(cursor.hasNext()){
+            return cursor.next().getLong(SensorData.FIELD_TIMESTAMP);
+        }else{
+            System.out.println("Warning no Timestamp was found?!");
+            return -1;
+        }
+    }
+
+    public List<SensorData> getEntriesAfter(long sequenceNumber, long timestamp){
+        System.out.println(String.format("Database.getEntriesAfter %s %s (local: %s)", sequenceNumber, timestamp, getLastSequenceNumber()));
+        Document query = new Document();
+        query.put(SensorData.FIELD_TIMESTAMP, new Document("$gte", timestamp));
+        query.put(SensorData.FIELD_SEQUENC_NUMBER, new Document("$gt", sequenceNumber));
+
+        MongoCursor<Document> cursor = dbCollection.find(
+            query
+        ).sort(
+            new Document(SensorData.FIELD_SEQUENC_NUMBER, 1)
+        ).iterator();
+
+        List<SensorData> sensorDataList = new ArrayList<>();
+        while (cursor.hasNext()){
+            sensorDataList.add(new SensorData(cursor.next()));
+        }
+
+        return sensorDataList;
+    }
 }
